@@ -1,0 +1,45 @@
+### VSCode Plugin rest-client
+### https://marketplace.visualstudio.com/items?itemName=humao.rest-client
+
+#host = http://localhost/api.php
+ @host = http://localhost:3000
+
+### === Bank API Tests
+
+### Create an account
+POST {{host}}/bank/account
+Content-Type: application/json
+
+{
+  "name": "Daniel Wang",
+  "balance": 1000
+}
+
+### Get account details
+GET {{host}}/bank/account/2
+
+### Deposit money
+POST {{host}}/bank/account/1/deposit
+Content-Type: application/json
+
+{
+  "amount": 500
+}
+
+### Withdraw money
+POST {{host}}/bank/account/1/withdraw
+Content-Type: application/json
+
+{
+  "amount": 200
+}
+
+### Transfer money
+POST {{host}}/bank/transfer
+Content-Type: application/json
+
+{
+  "fromId": 1,
+  "toId": 2,
+  "amount": 300
+}
