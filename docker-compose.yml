@@ -1,0 +1,59 @@
+### docker-compose.yml
+
+services:
+  server:
+    image: simple-banking-api:latest
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    tty: true
+    restart: always
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    platform: linux/x86_64
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data-volumes:/var/lib/mysql
+      - ./db/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    restart: always
+    environment:
+      - MYSQL_DATABASE=meepshop_bank
+      - MYSQL_USER=meepshop_bank
+      - MYSQL_PASSWORD=A123456
+      - MYSQL_ROOT_PASSWORD=A123456
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+
+  flyway:
+    image: flyway/flyway:latest
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "chmod +x /wait-for-it.sh &&
+      /wait-for-it.sh mysql:3306 --
+      flyway -X -url=jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-meepshop_bank}
+      -user=${MYSQL_USER:-meepshop_bank}
+      -password=${MYSQL_PASSWORD:-A123456}
+      -baselineOnMigrate=true
+      -baselineVersion=0.5 migrate > /flyway/logs/flyway.log 2>&1"
+    volumes:
+      - ./etc/wait-for-it.sh:/wait-for-it.sh
+      - ./migrations:/flyway/sql
+      - ./logs/flyway:/flyway/logs
+    restart: "no"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data-volumes:
