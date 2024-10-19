@@ -1,0 +1,14 @@
+CREATE TABLE `bank_account` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name` varchar(255) NOT NULL,
+  `balance` INT UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='銀行帳戶' ROW_FORMAT=COMPACT;
+
+CREATE TABLE `bank_catalog` (
+  `id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `name` varchar(255) NOT NULL,
+  `balance` INT UNSIGNED NOT NULL,
+  `action` ENUM('withdrawal', 'deposit') NOT NULL,
+  `amount` INT UNSIGNED NOT NULL,
+  `time` TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='銀行交易目錄' ROW_FORMAT=COMPACT;
